@@ -1,0 +1,22 @@
+{
+    "name": "texthtml/php-lock",
+    "description" : "ressource lock",
+    "license": "aGPLv3",
+    "type": "library",
+    "autoload": {
+        "psr-4": { "TH\\Lock\\": "src" }
+    },
+    "authors": [
+        {
+            "name": "Mathieu Rochette",
+            "email": "mathieu@rochette.cc"
+        }
+    ],
+    "require-dev": {
+        "phpspec/phpspec": "~2.0",
+        "php-vfs/php-vfs": "~1.1"
+    },
+    "require": {
+        "psr/log": "~1.0"
+    }
+}
