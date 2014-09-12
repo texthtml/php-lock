@@ -8,32 +8,31 @@ use Exception;
 
 class FileLock implements Lock
 {
-    private $identifier;
+    const EXCLUSIVE = true;
+    const SHARED = false;
+
+    const BLOCKING = true;
+    const NON_BLOCKING = false;
+
     private $lock_file;
+    private $identifier;
     private $owner;
-    private $operation;
     private $fh;
 
-    public function __construct($lock_file, $identifier = null, $owner = null, $operation = LOCK_EX, $blocking = false)
+    public function __construct($lock_file, $identifier = null, $owner = null)
     {
+        $this->lock_file  = $lock_file;
         $this->identifier = $identifier?:$lock_file;
-        $this->lock_file     = $lock_file;
-        $this->owner         = $owner === null ? '' : $owner.': ';
-        $this->operation     = $operation | LOCK_NB;
-
-        if ($blocking) {
-            $this->operation &= ~LOCK_NB;
-        }
+        $this->owner      = $owner === null ? '' : $owner.': ';
 
         $this->logger = new NullLogger;
     }
 
-    public function acquire()
+    public function acquire($exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)
     {
-        $blocking  = !$this->operation & LOCK_NB;
-        $exclusive = $this->operation & LOCK_EX;
+        $operation  = ($exclusive ? LOCK_EX : LOCK_SH) | ($blocking ? 0 : LOCK_NB);
 
-        if (!flock($this->fh(), $this->operation)) {
+        if (!flock($this->fh(), $operation)) {
             $this->logger->debug(($exclusive ?
                 '{owner} could not acquire exclusive lock on {identifier}':
                 '{owner} could not acquire shared lock on {identifier}'
@@ -42,9 +41,10 @@ class FileLock implements Lock
                 'owner' => $this->owner
             ]);
 
-            throw new Exception(
-                'Could not acquire exclusive lock on '.($this->identifier ? $this->identifier : $this->lock_file)
-            );
+            throw new Exception(($exclusive ?
+                'Could not acquire exclusive lock on '.$this->identifier:
+                'Could not acquire shared lock on '.$this->identifier
+            ));
 
         }
 
@@ -55,8 +55,6 @@ class FileLock implements Lock
             'identifier' => $this->identifier,
             'owner' => $this->owner
         ]);
-
-        return true;
     }
 
     public function release()
@@ -65,7 +63,14 @@ class FileLock implements Lock
             return;
         }
 
-        flock($this->fh, LOCK_UN);
+        if(flock($this->fh, LOCK_EX)) {
+            fclose($this->fh);
+            $this->fh = null;
+            unlink($this->lock_file);
+        } else {
+            flock($this->fh, LOCK_UN);
+        }
+
 
         $this->logger->debug(
             '{owner} lock released on {identifier}',

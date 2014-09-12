@@ -3,7 +3,6 @@
 namespace spec\TH\Lock;
 
 use VirtualFileSystem\FileSystem;
-use Psr\Log\LoggerInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -12,12 +11,12 @@ class FileFactorySpec extends ObjectBehavior
     private $fs;
     private $lock_dir;
 
-    public function let(LoggerInterface $logger)
+    public function let()
     {
         $this->fs = new FileSystem;
         $this->lock_dir = $this->fs->path('/path/to/lock_dir');
 
-        $this->beConstructedWith($logger, $this->lock_dir, 'sha256');
+        $this->beConstructedWith($this->lock_dir, 'sha256');
     }
 
     public function it_is_initializable()

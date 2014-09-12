@@ -11,14 +11,19 @@ class FileFactory implements LockFactory
     private $logger;
     private $hash_algo;
 
-    public function __construct(LoggerInterface $logger, $lock_dir, $hash_algo = 'sha256')
+    public function __construct($lock_dir, $hash_algo = 'sha256')
     {
-        $this->logger    = $logger;
+        $this->logger    = new NullLogger;
         $this->lock_dir  = $lock_dir;
         $this->hash_algo = $hash_algo;
     }
 
-    public function create($resource, $owner = null, $operation = LOCK_EX)
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function create($resource, $owner = null)
     {
         if (!is_dir($this->lock_dir)) {
             mkdir($this->lock_dir, 0777, true);
@@ -26,7 +31,7 @@ class FileFactory implements LockFactory
 
         $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
 
-        $lock = new FileLock($path, $resource, $owner, $operation);
+        $lock = new FileLock($path, $resource, $owner);
 
         $lock->setLogger($this->logger);
 
