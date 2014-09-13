@@ -31,7 +31,7 @@ class FileFactory implements LockFactory
 
         $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
 
-        $lock = new FileLock($path, $resource, $owner);
+        $lock = new FileLock($path, $resource, $owner, true);
 
         $lock->setLogger($this->logger);
 

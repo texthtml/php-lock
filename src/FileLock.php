@@ -18,12 +18,14 @@ class FileLock implements Lock
     private $identifier;
     private $owner;
     private $fh;
+    private $remove_on_release;
 
-    public function __construct($lock_file, $identifier = null, $owner = null)
+    public function __construct($lock_file, $identifier = null, $owner = null, $remove_on_release = false)
     {
-        $this->lock_file  = $lock_file;
-        $this->identifier = $identifier?:$lock_file;
-        $this->owner      = $owner === null ? '' : $owner.': ';
+        $this->lock_file         = $lock_file;
+        $this->identifier        = $identifier?:$lock_file;
+        $this->owner             = $owner === null ? '' : $owner.': ';
+        $this->remove_on_release = $remove_on_release;
 
         $this->logger = new NullLogger;
     }
@@ -63,7 +65,7 @@ class FileLock implements Lock
             return;
         }
 
-        if(flock($this->fh, LOCK_EX)) {
+        if($this->remove_on_release && flock($this->fh, LOCK_EX)) {
             fclose($this->fh);
             $this->fh = null;
             unlink($this->lock_file);

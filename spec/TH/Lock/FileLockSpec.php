@@ -64,8 +64,6 @@ class FileLockSpec extends ObjectBehavior
         $this->acquire(FileLock::SHARED);
         $this->release();
 
-        touch($this->lock_file);
-
         if (!flock(fopen($this->lock_file, 'r'), LOCK_EX|LOCK_NB)) {
             throw new Exception('Lock file was not released');
         }
@@ -81,6 +79,8 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_remove_its_lock_file_if_not_locked()
     {
+        $this->beConstructedWith($this->lock_file, null, null, true);
+
         $this->acquire();
         $this->release();
 
@@ -91,6 +91,8 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_does_not_remove_its_lock_file_if_still_locked()
     {
+        $this->beConstructedWith($this->lock_file, null, null, true);
+
         touch($this->lock_file);
         flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB);
 
@@ -104,6 +106,8 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_can_acquire_then_release_and_acquire_again()
     {
+        $this->beConstructedWith($this->lock_file, null, null, true);
+
         $this->acquire();
         $this->release();
         $this->acquire();
