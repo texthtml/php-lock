@@ -14,12 +14,8 @@
     ],
     "require-dev": {
         "phpspec/phpspec": "~2.0",
-        "php-vfs/php-vfs": "dev-feature/flock"
+        "php-vfs/php-vfs": "~1.2@dev"
     },
-    "repositories": [{
-        "type": "vcs",
-        "url": "http://github.com/mathroc/php-vfs"
-    }],
     "require": {
         "psr/log": "~1.0"
     }
