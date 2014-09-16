@@ -93,7 +93,7 @@ class FileLock implements Lock
             return;
         }
 
-        if($this->remove_on_release && $this->flock(LOCK_EX)) {
+        if ($this->remove_on_release && $this->flock(LOCK_EX | LOCK_NB)) {
             unlink($this->lock_file);
         }
 
