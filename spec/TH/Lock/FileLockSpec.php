@@ -119,5 +119,7 @@ class FileLockSpec extends ObjectBehavior
         if (flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB)) {
             throw new Exception('Lock file was not exclusively locked');
         }
+
+        $this->release();
     }
 }
