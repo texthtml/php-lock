@@ -14,7 +14,7 @@
     ],
     "require-dev": {
         "phpspec/phpspec": "~2.0",
-        "php-vfs/php-vfs": "~1.2@dev"
+        "php-vfs/php-vfs": "~1.2"
     },
     "require": {
         "psr/log": "~1.0"
