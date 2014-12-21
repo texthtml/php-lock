@@ -10,14 +10,10 @@
 
 ## Installation
 
-Through Composer :
+With Composer :
 
-```json
-{
-    "require": {
-        "texthtml/php-lock": "~1.0"
-    }
-}
+```bash
+composer require texthtml/php-lock
 ```
 
 ## Usage
