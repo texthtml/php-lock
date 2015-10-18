@@ -44,9 +44,9 @@ $lock->release();
 
 use TH\Lock\FileLock;
 
-$lock = new FileLock('/path/to/file');
+$lock = new FileLock('/path/to/file', FileLock::SHARED);
 
-$lock->acquire(FileLock::SHARED);
+$lock->acquire();
 
 // other processes that try to acquire an exclusive lock on the file will fail,
 // processes that try to acquire an shared lock on the file will succeed
@@ -57,10 +57,6 @@ $lock->acquire();
 
 // other processes can now acquire an exclusive lock on the file if no other shared lock remains.
 ```
-
-### Upgrading or downgrading a lock
-
-`$lock->acquire()` can be called multiple times to either upgrade a shared lock to an exclusive lock or downgrade an exclusive lock to a shared one. You can use it when you're done editing the file.
 
 ### Auto release
 
@@ -121,13 +117,13 @@ $lock = $factory->create('resource identifier');
 
 There are two methods you can use on a `FileLock`:
 
-* `\TH\Lock\FileLock::acquire($exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to acquire a lock on the file
+* `\TH\Lock\FileLock::acquire()` used to acquire a lock on the file
 * `\TH\Lock\FileLock::release()` used to release a lock on the file
 
-And one on a `FileFactory':
+And one on a `FileFactory`:
 
-* `\TH\Lock\FileFactory::create($resource, $owner = null)` used to create a `FileLock` for $resource
+* `\TH\Lock\FileFactory::create($resource, $owner = null, $exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to create a `FileLock` for `$resource`
 
 ## Notes
 
-Only lock file are currently supported. It means distributed processes can't be lock this way. It should be easy to implements the `TH\Lock\Lock` and `TH\Lock\LockFactory` interface to use a distributed lock mechanism (maybe with [Redis](http://redis.io/topics/distlock)).
+Only lock file are currently supported. It means distributed processes can't be lock this way. It should be easy to implements the `TH\Lock\Lock`  interface to use a distributed lock mechanism (maybe with [Redis](http://redis.io/topics/distlock)).
