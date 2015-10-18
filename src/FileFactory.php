@@ -30,14 +30,12 @@ class FileFactory
     /**
      * Create a FileLock for $resource
      * @param string      $resource  resource identifier
-     * @param string|null $owner     owner name (for logging)
      * @param boolean     $exclusive true for an exclusive lock, false for shared one
      * @param boolean     $blocking  true to wait for lock to be available, false to throw exception instead of waiting
      * @return FileLock
      */
     public function create(
         $resource,
-        $owner = null,
         $exclusive = FileLock::EXCLUSIVE,
         $blocking = FileLock::NON_BLOCKING
     ) {
@@ -47,7 +45,7 @@ class FileFactory
 
         $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
 
-        $lock = new FileLock($path, $exclusive, $blocking, $resource, $owner, true, $this->logger);
+        $lock = new FileLock($path, $exclusive, $blocking, $resource, true, $this->logger);
 
         return $lock;
     }
