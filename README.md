@@ -126,4 +126,6 @@ And one on a `FileFactory`:
 
 ## Notes
 
-Only lock file are currently supported. It means distributed processes can't be lock this way. It should be easy to implements the `TH\Lock\Lock`  interface to use a distributed lock mechanism (maybe with [Redis](http://redis.io/topics/distlock)).
+### Distributed system
+
+On a distributed system, file based locking does not work, You can use the [php-lock redis extension](https://github.com/texthtml/php-lock-redis) to have a safe lock instead.
