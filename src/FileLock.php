@@ -23,19 +23,25 @@ class FileLock implements Lock
     private $logger;
 
     /**
-     * @param string       $lock_file         path to file
-     * @param string|null  $identifier        resource identifier (default to $lock_file) for logging
-     * @param string|null  $owner             owner name for logging
-     * @param boolean      $remove_on_release remove file on release if no other lock remains
+     * @param string          $lock_file         path to file
+     * @param string|null     $identifier        resource identifier (default to $lock_file) for logging
+     * @param string|null     $owner             owner name for logging
+     * @param boolean         $remove_on_release remove file on release if no other lock remains
+     * @param LoggerInterface $logger
      */
-    public function __construct($lock_file, $identifier = null, $owner = null, $remove_on_release = false)
-    {
+    public function __construct(
+        $lock_file,
+        $identifier = null,
+        $owner = null,
+        $remove_on_release = false,
+        LoggerInterface $logger = null
+    ) {
         $this->lock_file         = $lock_file;
         $this->identifier        = $identifier?:$lock_file;
         $this->owner             = $owner === null ? '' : $owner.': ';
         $this->remove_on_release = $remove_on_release;
 
-        $this->logger = new NullLogger;
+        $this->logger = $logger ?: new NullLogger;
     }
 
     /**
@@ -105,11 +111,6 @@ class FileLock implements Lock
             'identifier' => $this->identifier,
             'owner' => $this->owner
         ]);
-    }
-
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     public function __destruct()

@@ -17,11 +17,4 @@ interface Lock
      * @return void
      */
     public function release();
-
-    /**
-     * Replace lock logger
-     * @param LoggerInterface $logger
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger);
 }

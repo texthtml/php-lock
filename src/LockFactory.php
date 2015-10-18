@@ -13,10 +13,4 @@ interface LockFactory
      * @return Lock
      */
     public function create($resource, $owner = null);
-
-    /**
-     * @param LoggerInterface $logger
-     * @return void
-     */
-    public function setLogger(LoggerInterface $logger);
 }

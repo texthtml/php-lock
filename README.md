@@ -114,24 +114,19 @@ The only `LockFactory` available at the moment is the `TH\Lock\FileFactory`. Thi
 use TH\Lock\FileFactory;
 
 $factory = new FileFactory('/path/to/lock_dir/');
-$factory->setLogger($psrLogger);
-
-$factory->create(...);
+$lock = $factory->create('resource identifier');
 ```
 
 ## API
 
-There are three methods you can use on a `FileLock`:
+There are two methods you can use on a `FileLock`:
 
 * `\TH\Lock\FileLock::acquire($exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to acquire a lock on the file
 * `\TH\Lock\FileLock::release()` used to release a lock on the file
-* `\TH\Lock\FileLock::setLogger(\Psr\Log\LoggerInterface $logger)` used to configure this lock logger (configured by the factory if the `LockFile` come from the factory)
 
-And two on `FileFactory':
+And one on a `FileFactory':
 
 * `\TH\Lock\FileFactory::create($resource, $owner = null)` used to create a `FileLock` for $resource
-* `\TH\Lock\FileFactory::setLogger(\Psr\Log\LoggerInterface $logger)` used to configure lock build by this factory
-`
 
 ## Notes
 

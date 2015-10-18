@@ -8,19 +8,16 @@ use Psr\Log\NullLogger;
 class FileFactory implements LockFactory
 {
     private $lock_dir;
-    private $logger;
     private $hash_algo;
 
-    public function __construct($lock_dir, $hash_algo = 'sha256')
+    private $logger;
+
+    public function __construct($lock_dir, $hash_algo = 'sha256', LoggerInterface $logger = null)
     {
-        $this->logger    = new NullLogger;
         $this->lock_dir  = $lock_dir;
         $this->hash_algo = $hash_algo;
-    }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
+        $this->logger = $logger ?: new NullLogger;
     }
 
     public function create($resource, $owner = null)
@@ -31,9 +28,7 @@ class FileFactory implements LockFactory
 
         $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
 
-        $lock = new FileLock($path, $resource, $owner, true);
-
-        $lock->setLogger($this->logger);
+        $lock = new FileLock($path, $resource, $owner, true, $this->logger);
 
         return $lock;
     }
