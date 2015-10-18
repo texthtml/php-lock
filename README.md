@@ -122,7 +122,7 @@ There are two methods you can use on a `FileLock`:
 
 And one on a `FileFactory`:
 
-* `\TH\Lock\FileFactory::create($resource, $owner = null, $exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to create a `FileLock` for `$resource`
+* `\TH\Lock\FileFactory::create($resource, $exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to create a `FileLock` for `$resource`
 
 ## Notes
 

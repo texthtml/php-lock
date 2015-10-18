@@ -81,7 +81,7 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_remove_its_lock_file_if_not_locked()
     {
-        $this->beConstructedWith($this->lock_file, FileLock::EXCLUSIVE, FileLock::NON_BLOCKING, null, null, true);
+        $this->beConstructedWith($this->lock_file, FileLock::EXCLUSIVE, FileLock::NON_BLOCKING, null, true);
 
         $this->acquire();
         $this->release();
@@ -93,7 +93,7 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_does_not_remove_its_lock_file_if_still_locked()
     {
-        $this->beConstructedWith($this->lock_file, FileLock::SHARED, FileLock::NON_BLOCKING, null, null, true);
+        $this->beConstructedWith($this->lock_file, FileLock::SHARED, FileLock::NON_BLOCKING, null, true);
 
         touch($this->lock_file);
         flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB);
@@ -108,7 +108,7 @@ class FileLockSpec extends ObjectBehavior
 
     public function it_can_acquire_then_release_and_acquire_again()
     {
-        $this->beConstructedWith($this->lock_file, FileLock::EXCLUSIVE, FileLock::NON_BLOCKING, null, null, true);
+        $this->beConstructedWith($this->lock_file, FileLock::EXCLUSIVE, FileLock::NON_BLOCKING, null, true);
 
         $this->acquire();
         $this->release();
