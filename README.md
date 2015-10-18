@@ -64,13 +64,13 @@ $lock->acquire();
 
 ### Auto release
 
-`$lock->release()` is called automatically when the lock is destroyed so you d'ont need to manually release it at the end of a script or if it got out of scope.
+`$lock->release()` is called automatically when the lock is destroyed so you don't need to manually release it at the end of a script or if it got out of scope.
 
 ```php
 use TH\Lock\FileLock;
 
 function batch() {
-    $lock = new FileLock('/fome/file');
+    $lock = new FileLock('/some/file');
     $lock->acquire();
 
     // lot of editing on file
