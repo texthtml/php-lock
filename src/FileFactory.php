@@ -45,7 +45,7 @@ class FileFactory
 
         $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
 
-        $lock = new FileLock($path, $exclusive, $blocking, $resource, true, $this->logger);
+        $lock = new FileLock($path, $exclusive, $blocking, true, $this->logger);
 
         return $lock;
     }

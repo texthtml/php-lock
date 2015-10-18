@@ -17,7 +17,6 @@ class FileLock implements Lock
     private $lock_file;
     private $exclusive;
     private $blocking;
-    private $identifier;
     private $fh;
     private $remove_on_release;
 
@@ -28,7 +27,6 @@ class FileLock implements Lock
      * @param boolean         $exclusive         true for an exclusive lock, false for shared one
      * @param boolean         $blocking          true to wait for lock to be available,
      *                                           false to throw exception instead of waiting
-     * @param string|null     $identifier        resource identifier (default to $lock_file) for logging
      * @param boolean         $remove_on_release remove file on release if no other lock remains
      * @param LoggerInterface $logger
      */
@@ -36,14 +34,12 @@ class FileLock implements Lock
         $lock_file,
         $exclusive = FileLock::EXCLUSIVE,
         $blocking = FileLock::NON_BLOCKING,
-        $identifier = null,
         $remove_on_release = false,
         LoggerInterface $logger = null
     ) {
         $this->lock_file         = $lock_file;
         $this->exclusive         = $exclusive;
         $this->blocking          = $blocking;
-        $this->identifier        = $identifier?:$lock_file;
         $this->remove_on_release = $remove_on_release;
 
         $this->logger = $logger ?: new NullLogger;
@@ -79,20 +75,20 @@ class FileLock implements Lock
     private function tryAcquire($operation, $lock_type)
     {
         $log_data = [
-            'identifier' => $this->identifier,
+            'lock_file' => $this->lock_file,
             'lock_type' => $lock_type
         ];
 
         if (!$this->flock($operation)) {
-            $this->logger->debug('could not acquire {lock_type} lock on {identifier}', $log_data);
+            $this->logger->debug('could not acquire {lock_type} lock on {lock_file}', $log_data);
 
             throw new Exception(
-                'Could not acquire '.$lock_type.' lock on '.$this->identifier
+                'Could not acquire '.$lock_type.' lock on '.$this->lock_file
             );
 
         }
 
-        $this->logger->debug('{lock_type} lock acquired on {identifier}', $log_data);
+        $this->logger->debug('{lock_type} lock acquired on {lock_file}', $log_data);
     }
 
     public function release()
@@ -109,7 +105,7 @@ class FileLock implements Lock
         fclose($this->fh);
         $this->fh = null;
 
-        $this->logger->debug('{lock_type} lock released on {identifier}', ['identifier' => $this->identifier]);
+        $this->logger->debug('{lock_type} lock released on {lock_file}', ['lock_file' => $this->lock_file]);
     }
 
     public function __destruct()
