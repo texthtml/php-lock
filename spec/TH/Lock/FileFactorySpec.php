@@ -22,7 +22,6 @@ class FileFactorySpec extends ObjectBehavior
     public function it_is_initializable()
     {
         $this->shouldHaveType('TH\Lock\FileFactory');
-        $this->shouldImplement('TH\Lock\LockFactory');
     }
 
     public function it_should_create_a_file_lock()

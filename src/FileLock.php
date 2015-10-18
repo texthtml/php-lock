@@ -15,6 +15,8 @@ class FileLock implements Lock
     const NON_BLOCKING = false;
 
     private $lock_file;
+    private $exclusive;
+    private $blocking;
     private $identifier;
     private $owner;
     private $fh;
@@ -24,6 +26,9 @@ class FileLock implements Lock
 
     /**
      * @param string          $lock_file         path to file
+     * @param boolean         $exclusive         true for an exclusive lock, false for shared one
+     * @param boolean         $blocking          true to wait for lock to be available,
+     *                                           false to throw exception instead of waiting
      * @param string|null     $identifier        resource identifier (default to $lock_file) for logging
      * @param string|null     $owner             owner name for logging
      * @param boolean         $remove_on_release remove file on release if no other lock remains
@@ -31,12 +36,16 @@ class FileLock implements Lock
      */
     public function __construct(
         $lock_file,
+        $exclusive = FileLock::EXCLUSIVE,
+        $blocking = FileLock::NON_BLOCKING,
         $identifier = null,
         $owner = null,
         $remove_on_release = false,
         LoggerInterface $logger = null
     ) {
         $this->lock_file         = $lock_file;
+        $this->exclusive         = $exclusive;
+        $this->blocking          = $blocking;
         $this->identifier        = $identifier?:$lock_file;
         $this->owner             = $owner === null ? '' : $owner.': ';
         $this->remove_on_release = $remove_on_release;
@@ -45,13 +54,11 @@ class FileLock implements Lock
     }
 
     /**
-     * @param  boolean $exclusive true for an exclusive lock, false for shared one
-     * @param  boolean $blocking  true to wait for lock to be available, false to throw exception instead of waiting
      * @inherit
      */
-    public function acquire($exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)
+    public function acquire()
     {
-        if ($exclusive === FileLock::EXCLUSIVE) {
+        if ($this->exclusive === FileLock::EXCLUSIVE) {
             $lock_type = 'exclusive';
             $operation = LOCK_EX;
         } else {
@@ -59,7 +66,7 @@ class FileLock implements Lock
             $operation = LOCK_SH;
         }
 
-        if ($blocking === FileLock::NON_BLOCKING) {
+        if ($this->blocking === FileLock::NON_BLOCKING) {
             $operation |= LOCK_NB;
         }
 
