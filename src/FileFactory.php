@@ -5,7 +5,7 @@ namespace TH\Lock;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class FileFactory
+class FileFactory implements Factory
 {
     private $lock_dir;
     private $hash_algo;
