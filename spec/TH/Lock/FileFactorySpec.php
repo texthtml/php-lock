@@ -2,9 +2,12 @@
 
 namespace spec\TH\Lock;
 
-use VirtualFileSystem\FileSystem;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use TH\Lock\Factory;
+use TH\Lock\FileFactory;
+use TH\Lock\FileLock;
+use VirtualFileSystem\FileSystem;
 
 class FileFactorySpec extends ObjectBehavior
 {
@@ -21,12 +24,12 @@ class FileFactorySpec extends ObjectBehavior
 
     public function it_is_initializable()
     {
-        $this->shouldHaveType('TH\Lock\FileFactory');
-        $this->shouldImplement('TH\Lock\Factory');
+        $this->shouldHaveType(FileFactory::class);
+        $this->shouldImplement(Factory::class);
     }
 
     public function it_should_create_a_file_lock()
     {
-        $this->create('some resource identifier')->shouldhaveType('TH\Lock\FileLock');
+        $this->create('some resource identifier')->shouldhaveType(FileLock::class);
     }
 }

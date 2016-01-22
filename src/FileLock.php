@@ -4,7 +4,6 @@ namespace TH\Lock;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Exception;
 
 class FileLock implements Lock
 {
@@ -82,7 +81,7 @@ class FileLock implements Lock
         if (!$this->flock($operation)) {
             $this->logger->debug('could not acquire {lock_type} lock on {lock_file}', $log_data);
 
-            throw new Exception(
+            throw new \Exception(
                 'Could not acquire '.$lock_type.' lock on '.$this->lock_file
             );
 
@@ -123,7 +122,7 @@ class FileLock implements Lock
         }
 
         if (!is_resource($this->fh)) {
-            throw new Exception('Could not open lock file '.$this->lock_file);
+            throw new \Exception('Could not open lock file '.$this->lock_file);
         }
 
         return flock($this->fh, $operation);
