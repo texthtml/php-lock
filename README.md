@@ -18,7 +18,7 @@ composer require texthtml/php-lock
 
 ## Usage
 
-You can create an object that represent a lock on a file. You can then try to acquire that lock by calling `$lock->acquire()`. If the lock fail it will throw an `Exception` (useful for CLI tools built with [Symfony Console Components documentation](http://symfony.com/doc/current/components/console/introduction.html)). If the lock is acquired the program can continue.
+You can create an object that represent a lock on a file. You can then try to acquire that lock by calling `$lock->acquire()`. If the lock fail it will throw a `\TH\Lock\Exception` (useful for CLI tools built with [Symfony Console Components documentation](http://symfony.com/doc/current/components/console/introduction.html)). If the lock is acquired the program can continue.
 
 ### Locking a file exclusively
 
@@ -41,7 +41,6 @@ $lock->release();
 ### Sharing a lock on a file
 
 ```php
-
 use TH\Lock\FileLock;
 
 $lock = new FileLock('/path/to/file', FileLock::SHARED);
@@ -81,7 +80,7 @@ batch();
 
 When you don't want some crontabs to overlap you can make a lock on the same file in each crontab. The `TH\Lock\LockFactory` can ease the process and provide more helpful message in case of overlap.
 
-```
+```php
 $lock = $factory->create('protected resource', 'process 1');
 
 $lock->acquire();
@@ -89,7 +88,7 @@ $lock->acquire();
 // process 1 does stuff
 ```
 
-```
+```php
 $lock = $factory->create('protected resource', 'process 2');
 
 $lock->acquire();
@@ -106,23 +105,30 @@ When process 1 is running and we start process 2, an Exception will be thrown: "
 The only `LockFactory` available at the moment is the `TH\Lock\FileFactory`. This factory autmatically create lock files for your resources in the specified folder.
 
 ```php
-
 use TH\Lock\FileFactory;
 
 $factory = new FileFactory('/path/to/lock_dir/');
 $lock = $factory->create('resource identifier');
 ```
 
-## API
+### Aggregating locks
 
-There are two methods you can use on a `FileLock`:
+If you want to simplify acquiring multiple locks at once, you can use the `\TH\Lock\LockSet`:
 
-* `\TH\Lock\FileLock::acquire()` used to acquire a lock on the file
-* `\TH\Lock\FileLock::release()` used to release a lock on the file
+```php
+use TH\Lock\LockSet;
 
-And one on a `FileFactory`:
+$superLock = new LockSet([$lock1, $lock2, $lock3]);
+// You can make a set with any types of locks (eg: FileLock, RedisSimpleLock or another nested LockSet)
 
-* `\TH\Lock\FileFactory::create($resource, $exclusive = FileLock::EXCLUSIVE, $blocking = FileLock::NON_BLOCKING)` used to create a `FileLock` for `$resource`
+$superLock->acquire();
+
+// all locks will be released when $superLock is destroyed or when `$superLock->release()` is called
+```
+
+It will try to acquire all locks, if it fails it will release the lock that have been acquired to avoid locking other processes.
+
+note: `Lock` put inside a `LockSet` should not be used manually anymore
 
 ## Notes
 

@@ -4,7 +4,6 @@ namespace TH\Lock;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use TH\Lock\RuntimeException;
 
 class FileLock implements Lock
 {
