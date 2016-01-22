@@ -42,11 +42,8 @@ class FileFactory implements Factory
         if (!is_dir($this->lock_dir)) {
             mkdir($this->lock_dir, 0777, true);
         }
-
-        $path = $this->lock_dir.'/'.hash($this->hash_algo, serialize($resource)).'.lock';
-
-        $lock = new FileLock($path, $exclusive, $blocking, true, $this->logger);
-
-        return $lock;
+        $hash = hash($this->hash_algo, serialize($resource));
+        $path = "{$this->lock_dir}/$hash.lock";
+        return new FileLock($path, $exclusive, $blocking, true, $this->logger);
     }
 }

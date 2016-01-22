@@ -16,7 +16,7 @@ class FileLockSpec extends ObjectBehavior
     public function let()
     {
         $this->fs = new FileSystem;
-        $this->lock_file = $this->fs->path('/path/to/lock_file.lock');
+        $this->lock_file = $this->fs->path("/path/to/lock_file.lock");
 
         mkdir(dirname($this->lock_file), 0777, true);
 
@@ -34,11 +34,11 @@ class FileLockSpec extends ObjectBehavior
         $this->acquire();
 
         if (!file_exists($this->lock_file)) {
-            throw new \Exception('Lock file was not created');
+            throw new \Exception("Lock file was not created");
         }
 
-        if (flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB)) {
-            throw new \Exception('Lock file was not exclusively locked');
+        if (flock(fopen($this->lock_file, "r"), LOCK_SH|LOCK_NB)) {
+            throw new \Exception("Lock file was not exclusively locked");
         }
     }
 
@@ -49,15 +49,15 @@ class FileLockSpec extends ObjectBehavior
         $this->acquire();
 
         if (!file_exists($this->lock_file)) {
-            throw new \Exception('Lock file was not created');
+            throw new \Exception("Lock file was not created");
         }
 
-        if (flock(fopen($this->lock_file, 'r'), LOCK_EX|LOCK_NB)) {
-            throw new \Exception('Lock file was not locked againt exclusive lock');
+        if (flock(fopen($this->lock_file, "r"), LOCK_EX|LOCK_NB)) {
+            throw new \Exception("Lock file was not locked againt exclusive lock");
         }
 
-        if (!flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB)) {
-            throw new \Exception('Lock file was not shared locked');
+        if (!flock(fopen($this->lock_file, "r"), LOCK_SH|LOCK_NB)) {
+            throw new \Exception("Lock file was not shared locked");
         }
     }
 
@@ -66,15 +66,15 @@ class FileLockSpec extends ObjectBehavior
         $this->acquire();
         $this->release();
 
-        if (!flock(fopen($this->lock_file, 'r'), LOCK_EX|LOCK_NB)) {
-            throw new \Exception('Lock file was not released');
+        if (!flock(fopen($this->lock_file, "r"), LOCK_EX|LOCK_NB)) {
+            throw new \Exception("Lock file was not released");
         }
     }
 
     public function it_should_throw_if_it_cannot_lock()
     {
         touch($this->lock_file);
-        flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB);
+        flock(fopen($this->lock_file, "r"), LOCK_SH|LOCK_NB);
 
         $this->shouldThrow()->duringAcquire();
     }
@@ -87,7 +87,7 @@ class FileLockSpec extends ObjectBehavior
         $this->release();
 
         if (file_exists($this->lock_file)) {
-            throw new \Exception('Lock file was not removed');
+            throw new \Exception("Lock file was not removed");
         }
     }
 
@@ -96,13 +96,13 @@ class FileLockSpec extends ObjectBehavior
         $this->beConstructedWith($this->lock_file, FileLock::SHARED, FileLock::NON_BLOCKING, true);
 
         touch($this->lock_file);
-        flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB);
+        flock(fopen($this->lock_file, "r"), LOCK_SH|LOCK_NB);
 
         $this->acquire();
         $this->release();
 
         if (!file_exists($this->lock_file)) {
-            throw new \Exception('Lock file was removed');
+            throw new \Exception("Lock file was removed");
         }
     }
 
@@ -115,11 +115,11 @@ class FileLockSpec extends ObjectBehavior
         $this->acquire();
 
         if (!file_exists($this->lock_file)) {
-            throw new \Exception('Lock file was not created');
+            throw new \Exception("Lock file was not created");
         }
 
-        if (flock(fopen($this->lock_file, 'r'), LOCK_SH|LOCK_NB)) {
-            throw new \Exception('Lock file was not exclusively locked');
+        if (flock(fopen($this->lock_file, "r"), LOCK_SH|LOCK_NB)) {
+            throw new \Exception("Lock file was not exclusively locked");
         }
 
         $this->release();

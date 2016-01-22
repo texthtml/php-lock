@@ -50,10 +50,10 @@ class FileLock implements Lock
     public function acquire()
     {
         if ($this->exclusive === FileLock::EXCLUSIVE) {
-            $lock_type = 'exclusive';
+            $lock_type = "exclusive";
             $operation = LOCK_EX;
         } else {
-            $lock_type = 'shared';
+            $lock_type = "shared";
             $operation = LOCK_SH;
         }
 
@@ -74,20 +74,20 @@ class FileLock implements Lock
     private function tryAcquire($operation, $lock_type)
     {
         $log_data = [
-            'lock_file' => $this->lock_file,
-            'lock_type' => $lock_type
+            "lock_file" => $this->lock_file,
+            "lock_type" => $lock_type
         ];
 
         if (!$this->flock($operation)) {
-            $this->logger->debug('could not acquire {lock_type} lock on {lock_file}', $log_data);
+            $this->logger->debug("could not acquire {lock_type} lock on {lock_file}", $log_data);
 
-            throw new \Exception(
-                'Could not acquire '.$lock_type.' lock on '.$this->lock_file
+            throw new \RuntimeException(
+                "Could not acquire $lock_type lock on {$this->lock_file}"
             );
 
         }
 
-        $this->logger->debug('{lock_type} lock acquired on {lock_file}', $log_data);
+        $this->logger->debug("{lock_type} lock acquired on {lock_file}", $log_data);
     }
 
     public function release()
@@ -104,7 +104,7 @@ class FileLock implements Lock
         fclose($this->fh);
         $this->fh = null;
 
-        $this->logger->debug('{lock_type} lock released on {lock_file}', ['lock_file' => $this->lock_file]);
+        $this->logger->debug("{lock_type} lock released on {lock_file}", ["lock_file" => $this->lock_file]);
     }
 
     public function __destruct()
@@ -118,11 +118,11 @@ class FileLock implements Lock
     private function flock($operation)
     {
         if ($this->fh === null) {
-            $this->fh = fopen($this->lock_file, 'c');
+            $this->fh = fopen($this->lock_file, "c");
         }
 
         if (!is_resource($this->fh)) {
-            throw new \Exception('Could not open lock file '.$this->lock_file);
+            throw new \RuntimeException("Could not open lock file {$this->lock_file}");
         }
 
         return flock($this->fh, $operation);

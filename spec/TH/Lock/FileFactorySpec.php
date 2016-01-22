@@ -17,9 +17,9 @@ class FileFactorySpec extends ObjectBehavior
     public function let()
     {
         $this->fs = new FileSystem;
-        $this->lock_dir = $this->fs->path('/path/to/lock_dir');
+        $this->lock_dir = $this->fs->path("/path/to/lock_dir");
 
-        $this->beConstructedWith($this->lock_dir, 'sha256');
+        $this->beConstructedWith($this->lock_dir, "sha256");
     }
 
     public function it_is_initializable()
@@ -30,6 +30,6 @@ class FileFactorySpec extends ObjectBehavior
 
     public function it_should_create_a_file_lock()
     {
-        $this->create('some resource identifier')->shouldhaveType(FileLock::class);
+        $this->create("some resource identifier")->shouldhaveType(FileLock::class);
     }
 }
