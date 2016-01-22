@@ -1,0 +1,9 @@
+php:
+  build: .
+  command: phpspec
+  volumes:
+    - ./composer.json:/scripts/composer.json:rw
+    - ./composer.lock:/scripts/composer.lock:rw
+    - ./spec:/scripts/spec:rw
+    - ./src:/scripts/src:rw
+    - ./vendor:/scripts/vendor:rw
