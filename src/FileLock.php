@@ -97,7 +97,9 @@ class FileLock implements Lock
         }
 
         if ($this->remove_on_release && $this->flock(LOCK_EX | LOCK_NB)) {
-            unlink($this->lock_file);
+            if (is_file($this->lock_file)) {
+                unlink($this->lock_file);
+            }
         }
 
         $this->flock(LOCK_UN);
