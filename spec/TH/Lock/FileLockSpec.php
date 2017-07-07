@@ -124,4 +124,13 @@ class FileLockSpec extends ObjectBehavior
 
         $this->release();
     }
+
+    public function it_does_not_throw_when_lock_file_does_not_exists()
+    {
+        $this->acquire();
+
+        unlink($this->lock_file);
+
+        $this->release();
+    }
 }
