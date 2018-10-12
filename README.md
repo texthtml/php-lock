@@ -52,7 +52,7 @@ $lock->acquire();
 
 // read /path/to/file
 
-$lock->acquire();
+$lock->release();
 
 // other processes can now acquire an exclusive lock on the file if no other shared lock remains.
 ```
