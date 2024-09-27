@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\TH\Lock;
+namespace spec;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
