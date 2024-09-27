@@ -13,7 +13,7 @@
         }
     ],
     "require-dev": {
-        "phpspec/phpspec": "^2.4",
+        "phpspec/phpspec": "^7.0",
         "php-vfs/php-vfs": "~1.2"
     },
     "require": {
